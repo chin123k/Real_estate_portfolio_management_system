@@ -38,7 +38,6 @@ frontend/.cache/
 backend/.cache/
 
 # Database dumps
-*.sql
 *.sqlite
 *.db
 
