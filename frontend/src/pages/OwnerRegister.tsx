@@ -1,0 +1,314 @@
+import React, { useState } from 'react';
+import {
+  Container,
+  Paper,
+  Typography,
+  TextField,
+  Button,
+  Box,
+  Alert,
+  Link,
+  Grid,
+  InputAdornment,
+  IconButton,
+} from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import PersonIcon from '@mui/icons-material/Person';
+import EmailIcon from '@mui/icons-material/Email';
+import LockIcon from '@mui/icons-material/Lock';
+import PhoneIcon from '@mui/icons-material/Phone';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import HomeWorkIcon from '@mui/icons-material/HomeWork';
+
+const OwnerRegister: React.FC = () => {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    First_Name: '',
+    Last_Name: '',
+    Email: '',
+    Password: '',
+    confirmPassword: '',
+    Phone: '',
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+    setError('');
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    // Validation
+    if (formData.Password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      setLoading(false);
+      return;
+    }
+
+    if (formData.Password.length < 6) {
+      setError('Password must be at least 6 characters long');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const { confirmPassword, ...registrationData } = formData;
+      
+      const response = await fetch('http://localhost:5000/api/auth/owner/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(registrationData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Registration successful, redirect to signin
+        navigate('/owner/signin');
+      } else {
+        setError(data.error || 'Registration failed');
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      setError('An error occurred. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Box
+      sx={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%)',
+        display: 'flex',
+        alignItems: 'center',
+        py: 8,
+      }}
+    >
+      <Container maxWidth="md">
+        <Paper
+          elevation={24}
+          sx={{
+            p: 5,
+            borderRadius: 4,
+            background: 'rgba(255, 255, 255, 0.95)',
+            backdropFilter: 'blur(10px)',
+          }}
+        >
+          {/* Logo */}
+          <Box sx={{ textAlign: 'center', mb: 4 }}>
+            <Box
+              sx={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: 'linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%)',
+                borderRadius: '50%',
+                width: 80,
+                height: 80,
+                mb: 2,
+              }}
+            >
+              <HomeWorkIcon sx={{ fontSize: 40, color: 'white' }} />
+            </Box>
+            <Typography variant="h4" sx={{ fontWeight: 700, color: '#1e293b', mb: 1 }}>
+              Create Owner Account
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Join us to manage your real estate properties
+            </Typography>
+          </Box>
+
+          {error && (
+            <Alert severity="error" sx={{ mb: 3 }}>
+              {error}
+            </Alert>
+          )}
+
+          <form onSubmit={handleSubmit}>
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="First Name"
+                  name="First_Name"
+                  value={formData.First_Name}
+                  onChange={handleChange}
+                  required
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <PersonIcon color="action" />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Last Name"
+                  name="Last_Name"
+                  value={formData.Last_Name}
+                  onChange={handleChange}
+                  required
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <PersonIcon color="action" />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Email Address"
+                  name="Email"
+                  type="email"
+                  value={formData.Email}
+                  onChange={handleChange}
+                  required
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <EmailIcon color="action" />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Phone Number"
+                  name="Phone"
+                  value={formData.Phone}
+                  onChange={handleChange}
+                  required
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <PhoneIcon color="action" />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Password"
+                  name="Password"
+                  type={showPassword ? 'text' : 'password'}
+                  value={formData.Password}
+                  onChange={handleChange}
+                  required
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <LockIcon color="action" />
+                      </InputAdornment>
+                    ),
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => setShowPassword(!showPassword)}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Confirm Password"
+                  name="confirmPassword"
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  required
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <LockIcon color="action" />
+                      </InputAdornment>
+                    ),
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                          edge="end"
+                        >
+                          {showConfirmPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
+            </Grid>
+
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              size="large"
+              disabled={loading}
+              sx={{
+                mt: 4,
+                py: 1.5,
+                fontSize: '1rem',
+                fontWeight: 600,
+                background: 'linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%)',
+                '&:hover': {
+                  background: 'linear-gradient(135deg, #1e40af 0%, #2563eb 100%)',
+                },
+              }}
+            >
+              {loading ? 'Creating Account...' : 'Create Account'}
+            </Button>
+          </form>
+
+          <Box sx={{ mt: 3, textAlign: 'center' }}>
+            <Typography variant="body2" color="text.secondary">
+              Already have an account?{' '}
+              <Link
+                href="/owner/signin"
+                sx={{ color: '#3b82f6', textDecoration: 'none', fontWeight: 600 }}
+              >
+                Sign in here
+              </Link>
+            </Typography>
+          </Box>
+        </Paper>
+      </Container>
+    </Box>
+  );
+};
+
+export default OwnerRegister;

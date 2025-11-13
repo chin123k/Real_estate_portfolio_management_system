@@ -1,0 +1,47 @@
+# Node
+node_modules/
+**/node_modules/
+
+# Build outputs
+build/
+dist/
+out/
+.next/
+.vercel/
+.cache/
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Env files
+.env
+.env.local
+.env.*.local
+
+# Editor and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Temporary
+.tmp/
+tmp/
+
+# Frontend/Backend caches
+frontend/.cache/
+backend/.cache/
+
+# Database dumps
+*.sql
+*.sqlite
+*.db
+
+# Misc
+*.swp
+*.swo
