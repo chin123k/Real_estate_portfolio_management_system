@@ -754,11 +754,11 @@ GET    /api/rooms/property/:id       - Get rooms by property
 
 ### Owner Portal
 - **Owner Dashboard**: Overview of properties, tenants, and financial metrics
-![owner_dashboard](owner_dashboard.png)
+![owner_dashboard](image-1.png)
 
 ### Tenant Portal
 - **Tenant Dashboard**: View current property and notifications
-![tenant_dashboard](tenant_dashboard.png)
+![tenant_dashboard](image.png)
 
 ---
 
